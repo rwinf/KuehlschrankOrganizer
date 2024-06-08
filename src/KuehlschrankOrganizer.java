@@ -175,6 +175,18 @@ public class KuehlschrankOrganizer extends JFrame { // Definition der Klasse
         }
     }
 
+    @Override
+    public String toString() {
+        return "KuehlschrankOrganizer{" +
+                "lebensmittelEingabe=" + lebensmittelEingabe +
+                ", haltbarkeitsdatumEingabe=" + haltbarkeitsdatumEingabe +
+                ", lebensmittelListe=" + lebensmittelListe +
+                ", kategorieAuswahl=" + kategorieAuswahl +
+                ", lebensmittelInhalt=" + lebensmittelInhalt +
+                ", gson=" + gson +
+                '}';
+    }
+
     public static void main(String[] args) {
         // Benutzt SwingUtilities.invokeLater, um sicherzustellen, dass der GUI-Code im Event-Dispatch-Thread (EDT) ausgeführt wird.
         // neue Instanz

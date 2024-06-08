@@ -29,7 +29,10 @@ public enum Kategorie {
         return stringArrayList.toArray(new String[0]);
     }
 
+    @Override
     public String toString() {
-        return name;
+        return "Kategorie{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

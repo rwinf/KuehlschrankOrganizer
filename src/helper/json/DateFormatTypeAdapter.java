@@ -28,4 +28,9 @@ public class DateFormatTypeAdapter extends TypeAdapter<LocalDate> {
         String string = jsonReader.nextString();
         return LocalDate.parse(string, Option.DATE_TIME_FORMATTER);
     }
+
+    @Override
+    public String toString() {
+        return "DateFormatTypeAdapter{}";
+    }
 }
