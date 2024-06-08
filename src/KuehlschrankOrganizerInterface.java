@@ -1,4 +1,8 @@
+import javax.swing.*;
+
 public interface KuehlschrankOrganizerInterface {
+    void removeSelection(JList<String> jList1);
+
     void saveLebensmittelInhalt();
 
     void loadLebensmittelInhalt();

@@ -17,12 +17,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganizerInterface { // Definition der Klasse
     private final JTextField lebensmittelEingabe;
     private final JTextField haltbarkeitsdatumEingabe; // Hinzugefügt: Eingabefeld für Haltbarkeitsdatum
-    private final JTextArea lebensmittelListe;
+    private final JPanel lebensmittelListePanel;
+    private final List<JList<String>> lebensmitteljListListe;
     // Hinzugefügt: ComboBox zur Auswahl der Kategorie
     private final JComboBox<String> kategorieAuswahl; // Dropdown-Menü zur Auswahl der Kategorie
     // Hinzugefügt: Zwei separate Listen für Lebensmittel und Getränke
@@ -71,10 +73,26 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         add(eingabePanel, BorderLayout.NORTH);
 
         // Anzeigebereich
-        lebensmittelListe = new JTextArea();
-        lebensmittelListe.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(lebensmittelListe);
-        add(scrollPane, BorderLayout.CENTER);
+        lebensmittelListePanel = new JPanel();
+        lebensmitteljListListe = new ArrayList<>();
+        lebensmittelListePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        for (int i = 0; i < Kategorie.values().length; i++) {
+            JPanel jPanel = new JPanel();
+            jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
+            jPanel.setAlignmentY(0.0f);
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+            jPanel.setAlignmentY(100);
+            jPanel.add(new JLabel(), gridBagConstraints);
+            JList<String> lebensmittelListe = new JList<>(new DefaultListModel<>());
+            lebensmittelListe.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            lebensmittelListe.addListSelectionListener(_ -> removeSelection(lebensmittelListe));
+            jPanel.add(lebensmittelListe, gridBagConstraints);
+            lebensmitteljListListe.add(lebensmittelListe);
+            lebensmittelListePanel.add(jPanel);
+        }
+        add(lebensmittelListePanel);
 
         //Initialisierung von GSON, für JSON Dateiarbeit
         gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new DateFormatTypeAdapter().nullSafe())
@@ -95,6 +113,14 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
             }
         });
         // Hier endet der Part zur Erstellung der grafischen Oberfläche
+    }
+
+    @Override
+    public void removeSelection(JList<String> jList1) {
+        for(JList<String> jList2 : lebensmitteljListListe) {
+            if(jList1.equals(jList2)) continue;
+            jList2.clearSelection();
+        }
     }
 
     @Override
@@ -127,10 +153,11 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
     public void hinzufuegenEintrag() {
         String eintrag = lebensmittelEingabe.getText().trim(); // Holt den Text aus einem Eingabefeld lebensmittelEingabe, entfernt führende und folgende Leerzeichen und speichert diesen in der Variablen lebensmittel.
         String haltbarkeitsdatum = haltbarkeitsdatumEingabe.getText().trim(); // Holt den Text aus dem Eingabefeld haltbarkeitsdatumEingabe, entfernt führende und folgende Leerzeichen und speichert diesen in der Variablen haltbarkeitsdatum.
-        String kategorie = (String) kategorieAuswahl.getSelectedItem();
+        String kategorieAuswahlSelectedItem = (String) kategorieAuswahl.getSelectedItem();
         if (eingabePruefen(eintrag, haltbarkeitsdatum)) return;
         try {
-            lebensmittelInhalt.add(Kategorie.get(kategorie), eintrag, haltbarkeitsdatum);
+            lebensmittelInhalt.add(Kategorie.get(kategorieAuswahlSelectedItem), eintrag, haltbarkeitsdatum);
+
         } catch (DateTimeException e) {
             JOptionPane.showMessageDialog(this, "Ungültiges Haltbarkeitsdatum!");
             return;
@@ -143,16 +170,16 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
     // Geändert: Methode zum Entfernen von Einträgen
     @Override
     public void entfernenEintrag() {
-        String eintrag = lebensmittelEingabe.getText().trim();
-        String haltbarkeitsdatum = haltbarkeitsdatumEingabe.getText().trim();
-        if (eingabePruefen(eintrag, haltbarkeitsdatum)) return;
-        if (!eintrag.isEmpty() && !haltbarkeitsdatum.isEmpty()) {
-            String kategorie = (String) kategorieAuswahl.getSelectedItem();
-            lebensmittelInhalt.remove(Kategorie.get(kategorie), eintrag, haltbarkeitsdatum);
-            aktualisierenLebensmittelListe();
-            lebensmittelEingabe.setText("");
-            haltbarkeitsdatumEingabe.setText(""); // Hinzugefügt: Textfeld für Haltbarkeitsdatum leeren
+        for (JList<String> stringJList : lebensmitteljListListe) {
+            if (stringJList.isSelectionEmpty()) continue;
+            for (Lebensmittel lebensmittel : lebensmittelInhalt) {
+                if (lebensmittel.toString().equals(stringJList.getSelectedValue())) {
+                    lebensmittelInhalt.remove(lebensmittel);
+                    break;
+                }
+            }
         }
+        aktualisierenLebensmittelListe();
     }
 
     @Override
@@ -171,15 +198,26 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
     // Geändert: Methode zur Aktualisierung der Anzeige
     @Override
     public void aktualisierenLebensmittelListe() {
-        lebensmittelListe.setText(""); // setzt den Textbereich auf einen leeren String, wodurch der bisherige Inhalt gelöscht wird
-        Map<Kategorie, LebensmittelInhalt> kategorieLebensmittelInhaltMap = lebensmittelInhalt.getNachKategorie(); // Map ordnet jeder kategorie ihren jeweiligen Inhalt zu
-        for (Kategorie kategorie : kategorieLebensmittelInhaltMap.keySet()) {
-            if (kategorieLebensmittelInhaltMap.get(kategorie).isEmpty()) continue;
-            lebensmittelListe.append(kategorie.toString() + ":\n");
-            for (Lebensmittel lebensmittel : kategorieLebensmittelInhaltMap.get(kategorie)) {
-                lebensmittelListe.append(lebensmittel.toString() + "\n");
+        int index = 0;
+        for (Component component1 : lebensmittelListePanel.getComponents()) {
+            if (!(component1 instanceof JPanel jPanel)) continue;
+            for (Component component2 : jPanel.getComponents()) {
+                if (!(component2 instanceof JLabel jLabel)) continue;
+                if (lebensmittelInhalt.getNachKategorie(Kategorie.get(index++)).isEmpty()) {
+                    jLabel.setText("");
+                    continue;
+                }
+                jLabel.setText((Kategorie.get(index - 1)).toString());
             }
-            lebensmittelListe.append("\n");
+
+        }
+        index = 0;
+        for (JList<String> stringJList : lebensmitteljListListe) {
+            if (!(stringJList.getModel() instanceof DefaultListModel<String> defaultListModel)) continue;
+            defaultListModel.clear();
+            for (Lebensmittel lebensmittel : lebensmittelInhalt.getNachKategorie(Kategorie.get(index++))) {
+                defaultListModel.addElement(lebensmittel.toString());
+            }
         }
     }
 
@@ -188,7 +226,6 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         return "KuehlschrankOrganizer{" +
                 "lebensmittelEingabe=" + lebensmittelEingabe +
                 ", haltbarkeitsdatumEingabe=" + haltbarkeitsdatumEingabe +
-                ", lebensmittelListe=" + lebensmittelListe +
                 ", kategorieAuswahl=" + kategorieAuswahl +
                 ", lebensmittelInhalt=" + lebensmittelInhalt +
                 ", gson=" + gson +

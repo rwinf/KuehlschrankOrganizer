@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public enum Kategorie {
-    LEBENSMITTEL("Lebensmittel"),
+    KEINE("Keine"),
+    OBST("Obst"),
+    GEMUESE("Gemüse"),
+    FLEISCH("Fleisch"),
+    SNACKS("Snacks"),
     GETRAENKE("Getränke");
+
 
     private final String name;
 
@@ -19,6 +24,11 @@ public enum Kategorie {
             i++;
         }
         return Kategorie.values()[i];
+    }
+
+    public static Kategorie get(int index) {
+        if (index < Kategorie.values().length) return Kategorie.values()[index];
+        return KEINE;
     }
 
     public static String[] getAsStringArray() {

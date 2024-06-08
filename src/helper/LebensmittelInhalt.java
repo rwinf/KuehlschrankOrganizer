@@ -12,19 +12,13 @@ public class LebensmittelInhalt extends ArrayList<Lebensmittel> {
         sort(new LebensmittelInhaltComparator());
     }
 
-    public void remove(Kategorie kategorie, String name, String haltbarkeitsdatum) {
-        super.remove(new Lebensmittel(kategorie, name, haltbarkeitsdatum));
-    }
-
-    public Map<Kategorie, LebensmittelInhalt> getNachKategorie() {
-        Map<Kategorie, LebensmittelInhalt> kategorieLebensmittelInhaltEnumMap = new EnumMap<>(Kategorie.class);
-        for (Kategorie kategorie : Kategorie.values()) {
-            kategorieLebensmittelInhaltEnumMap.put(kategorie, new LebensmittelInhalt());
-        }
+    public LebensmittelInhalt getNachKategorie(Kategorie kategorie) {
+        LebensmittelInhalt lebensmittelInhalt = new LebensmittelInhalt();
         for (Lebensmittel lebensmittel : this) {
-            kategorieLebensmittelInhaltEnumMap.get(lebensmittel.kategorie).add(lebensmittel);
+            if(kategorie != lebensmittel.kategorie) continue;
+            lebensmittelInhalt.add(lebensmittel);
         }
-        return kategorieLebensmittelInhaltEnumMap;
+        return lebensmittelInhalt;
     }
 
     private static class LebensmittelInhaltComparator implements Comparator<Lebensmittel> {
