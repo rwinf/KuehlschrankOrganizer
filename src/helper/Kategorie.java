@@ -31,8 +31,6 @@ public enum Kategorie {
 
     @Override
     public String toString() {
-        return "Kategorie{" +
-                "name='" + name + '\'' +
-                '}';
+        return name;
     }
 }

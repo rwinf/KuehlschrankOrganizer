@@ -32,10 +32,6 @@ public class Lebensmittel {
 
     @Override
     public String toString() {
-        return "Lebensmittel{" +
-                "kategorie=" + kategorie +
-                ", name='" + name + '\'' +
-                ", haltbarkeitsdatum=" + haltbarkeitsdatum +
-                '}';
+        return name + ": " + haltbarkeitsdatum.format(Option.DATE_TIME_FORMATTER);
     }
 }

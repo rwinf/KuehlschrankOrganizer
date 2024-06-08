@@ -4,6 +4,7 @@ import helper.Kategorie;
 import helper.Lebensmittel;
 import helper.LebensmittelInhalt;
 import helper.json.DateFormatTypeAdapter;
+import utility.Language;
 import utility.Option;
 
 import javax.swing.*;
@@ -18,7 +19,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Map;
 
-public class KuehlschrankOrganizer extends JFrame { // Definition der Klasse
+public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganizerInterface { // Definition der Klasse
     private final JTextField lebensmittelEingabe;
     private final JTextField haltbarkeitsdatumEingabe; // Hinzugefügt: Eingabefeld für Haltbarkeitsdatum
     private final JTextArea lebensmittelListe;
@@ -27,11 +28,12 @@ public class KuehlschrankOrganizer extends JFrame { // Definition der Klasse
     // Hinzugefügt: Zwei separate Listen für Lebensmittel und Getränke
     private LebensmittelInhalt lebensmittelInhalt;
     Gson gson;
+    private int language = 0;
 
     public KuehlschrankOrganizer() {
         // Hier beginnt der Part zur Erstellung der grafischen Oberfläche
         // Rahmen und Layout
-        setTitle("Kühlschrank Organizer");
+        setTitle(Language.getTitle(language));
         setSize(1200, 800); // Geändert: Größe angepasst
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -95,7 +97,8 @@ public class KuehlschrankOrganizer extends JFrame { // Definition der Klasse
         // Hier endet der Part zur Erstellung der grafischen Oberfläche
     }
 
-    private void saveLebensmittelInhalt() { // speichern des aktuellen Inhalts vom Kühlschrank in eine JSON-Datei
+    @Override
+    public void saveLebensmittelInhalt() { // speichern des aktuellen Inhalts vom Kühlschrank in eine JSON-Datei
         try {
             FileWriter fileWriter = new FileWriter(Option.PATH);
             gson.toJson(lebensmittelInhalt, fileWriter);
@@ -106,7 +109,8 @@ public class KuehlschrankOrganizer extends JFrame { // Definition der Klasse
         }
     }
 
-    private void loadLebensmittelInhalt() {  // lädt den Inhalt des Kühlschranks aus einer JSON Datei
+    @Override
+    public void loadLebensmittelInhalt() {  // lädt den Inhalt des Kühlschranks aus einer JSON Datei
         try {
             FileReader fileReader = new FileReader(Option.PATH);
             lebensmittelInhalt = gson.fromJson(fileReader, LebensmittelInhalt.class);
@@ -119,7 +123,8 @@ public class KuehlschrankOrganizer extends JFrame { // Definition der Klasse
     }
 
     // Geändert: Methode zum Hinzufügen von Einträgen
-    private void hinzufuegenEintrag() {
+    @Override
+    public void hinzufuegenEintrag() {
         String eintrag = lebensmittelEingabe.getText().trim(); // Holt den Text aus einem Eingabefeld lebensmittelEingabe, entfernt führende und folgende Leerzeichen und speichert diesen in der Variablen lebensmittel.
         String haltbarkeitsdatum = haltbarkeitsdatumEingabe.getText().trim(); // Holt den Text aus dem Eingabefeld haltbarkeitsdatumEingabe, entfernt führende und folgende Leerzeichen und speichert diesen in der Variablen haltbarkeitsdatum.
         String kategorie = (String) kategorieAuswahl.getSelectedItem();
@@ -136,7 +141,8 @@ public class KuehlschrankOrganizer extends JFrame { // Definition der Klasse
     }
 
     // Geändert: Methode zum Entfernen von Einträgen
-    private void entfernenEintrag() {
+    @Override
+    public void entfernenEintrag() {
         String eintrag = lebensmittelEingabe.getText().trim();
         String haltbarkeitsdatum = haltbarkeitsdatumEingabe.getText().trim();
         if (eingabePruefen(eintrag, haltbarkeitsdatum)) return;
@@ -149,20 +155,22 @@ public class KuehlschrankOrganizer extends JFrame { // Definition der Klasse
         }
     }
 
-    private boolean eingabePruefen(String eintrag, String haltbarkeitsdatum) {
+    @Override
+    public boolean eingabePruefen(String eintrag, String haltbarkeitsdatum) {
         if (eintrag.isEmpty()
                 || eintrag.contains("<")
                 || eintrag.contains(">")
                 || eintrag.contains("\"")
                 || haltbarkeitsdatum.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Ungültige Eingabe!");
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     // Geändert: Methode zur Aktualisierung der Anzeige
-    private void aktualisierenLebensmittelListe() {
+    @Override
+    public void aktualisierenLebensmittelListe() {
         lebensmittelListe.setText(""); // setzt den Textbereich auf einen leeren String, wodurch der bisherige Inhalt gelöscht wird
         Map<Kategorie, LebensmittelInhalt> kategorieLebensmittelInhaltMap = lebensmittelInhalt.getNachKategorie(); // Map ordnet jeder kategorie ihren jeweiligen Inhalt zu
         for (Kategorie kategorie : kategorieLebensmittelInhaltMap.keySet()) {
