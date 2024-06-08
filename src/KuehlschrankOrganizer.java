@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -121,19 +122,24 @@ public class KuehlschrankOrganizer extends JFrame { // Definition der Klasse
     private void hinzufuegenEintrag() {
         String eintrag = lebensmittelEingabe.getText().trim(); // Holt den Text aus einem Eingabefeld lebensmittelEingabe, entfernt führende und folgende Leerzeichen und speichert diesen in der Variablen lebensmittel.
         String haltbarkeitsdatum = haltbarkeitsdatumEingabe.getText().trim(); // Holt den Text aus dem Eingabefeld haltbarkeitsdatumEingabe, entfernt führende und folgende Leerzeichen und speichert diesen in der Variablen haltbarkeitsdatum.
-        if (!eintrag.isEmpty() && !haltbarkeitsdatum.isEmpty()) {
-            String kategorie = (String) kategorieAuswahl.getSelectedItem();
+        String kategorie = (String) kategorieAuswahl.getSelectedItem();
+        if (eingabePruefen(eintrag, haltbarkeitsdatum)) return;
+        try {
             lebensmittelInhalt.add(Kategorie.get(kategorie), eintrag, haltbarkeitsdatum);
-            aktualisierenLebensmittelListe();
-            lebensmittelEingabe.setText("");
-            haltbarkeitsdatumEingabe.setText(""); // Hinzugefügt: Textfeld für Haltbarkeitsdatum leeren
+        } catch (DateTimeException e) {
+            JOptionPane.showMessageDialog(this, "Ungültiges Haltbarkeitsdatum!");
+            return;
         }
+        aktualisierenLebensmittelListe();
+        lebensmittelEingabe.setText("");
+        haltbarkeitsdatumEingabe.setText(""); // Hinzugefügt: Textfeld für Haltbarkeitsdatum leeren
     }
 
     // Geändert: Methode zum Entfernen von Einträgen
     private void entfernenEintrag() {
         String eintrag = lebensmittelEingabe.getText().trim();
         String haltbarkeitsdatum = haltbarkeitsdatumEingabe.getText().trim();
+        if (eingabePruefen(eintrag, haltbarkeitsdatum)) return;
         if (!eintrag.isEmpty() && !haltbarkeitsdatum.isEmpty()) {
             String kategorie = (String) kategorieAuswahl.getSelectedItem();
             lebensmittelInhalt.remove(Kategorie.get(kategorie), eintrag, haltbarkeitsdatum);
@@ -141,6 +147,18 @@ public class KuehlschrankOrganizer extends JFrame { // Definition der Klasse
             lebensmittelEingabe.setText("");
             haltbarkeitsdatumEingabe.setText(""); // Hinzugefügt: Textfeld für Haltbarkeitsdatum leeren
         }
+    }
+
+    private boolean eingabePruefen(String eintrag, String haltbarkeitsdatum) {
+        if (eintrag.isEmpty()
+                || eintrag.contains("<")
+                || eintrag.contains(">")
+                || eintrag.contains("\"")
+                || haltbarkeitsdatum.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ungültige Eingabe!");
+            return false;
+        }
+        return true;
     }
 
     // Geändert: Methode zur Aktualisierung der Anzeige

@@ -2,6 +2,7 @@ package helper;
 
 import utility.Option;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -10,7 +11,7 @@ public class Lebensmittel {
     String name;
     LocalDate haltbarkeitsdatum;
 
-    public Lebensmittel(Kategorie kategorie, String name, String haltbarkeitsdatum) {
+    public Lebensmittel(Kategorie kategorie, String name, String haltbarkeitsdatum) throws DateTimeException {
         this.kategorie = kategorie;
         this.name = name;
         this.haltbarkeitsdatum = LocalDate.parse(haltbarkeitsdatum, Option.DATE_TIME_FORMATTER);
