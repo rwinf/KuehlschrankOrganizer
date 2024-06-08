@@ -33,4 +33,9 @@ public class LebensmittelInhalt extends ArrayList<Lebensmittel> {
             return lebensmittel1.haltbarkeitsdatum.compareTo(lebensmittel2.haltbarkeitsdatum);
         }
     }
+
+    @Override
+    public String toString() {
+        return "LebensmittelInhalt{}";
+    }
 }
