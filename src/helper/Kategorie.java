@@ -1,26 +1,29 @@
 package helper;
 
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Arrays;
 
 public enum Kategorie {
-    KEINE("Keine"),
-    OBST("Obst"),
-    GEMUESE("Gemüse"),
-    FLEISCH("Fleisch"),
-    SNACKS("Snacks"),
-    GETRAENKE("Getränke");
+    KEINE(new String[] {"Keine", "None"}),
+    OBST(new String[] {"Obst", "Fruit"}),
+    GEMUESE(new String[] {"Gemüse", "Vegetable"}),
+    FLEISCH(new String[] {"Fleisch", "Meat"}),
+    SNACKS(new String[] {"Snacks", "Snacks"}),
+    GETRAENKE(new String[] {"Getränke", "Drinks"});
 
 
-    private final String name;
+    private final String[] name;
 
-    Kategorie(String name) {
+    Kategorie(String[] name) {
         this.name = name;
     }
 
     public static Kategorie get(String name) {
         int i = 0;
-        while (!Objects.equals(Kategorie.values()[i].name, name)) {
+        for(Kategorie kategorie : values()) {
+            for(String kategorieString : kategorie.name) {
+                if (kategorieString.equals(name)) return values()[i];
+            }
             i++;
         }
         return Kategorie.values()[i];
@@ -31,16 +34,20 @@ public enum Kategorie {
         return KEINE;
     }
 
-    public static String[] getAsStringArray() {
+    public static String[] getAsStringArray(int sprache) {
         ArrayList<String> stringArrayList = new ArrayList<>();
         for (Kategorie kategorie : Kategorie.values()) {
-            stringArrayList.add(kategorie.name);
+            stringArrayList.add(kategorie.name[sprache]);
         }
         return stringArrayList.toArray(new String[0]);
     }
 
+    public String toString(int sprache) {
+        return name[sprache];
+    }
+
     @Override
     public String toString() {
-        return name;
+        return Arrays.toString(name);
     }
 }
