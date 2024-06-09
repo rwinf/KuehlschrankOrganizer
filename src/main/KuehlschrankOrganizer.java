@@ -45,7 +45,6 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
 
         //Hier beginnt der Part zur Erstellung der grafischen Oberfläche
         //Rahmen und Layout
-        setTitle(Sprache.getTitel(sprache));
         setSize(1200, 800); // Geändert: Größe angepasst
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -54,33 +53,38 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         JPanel eingabePanel = new JPanel();
         eingabePanel.setLayout(new FlowLayout());
 
-        eingabeLabel = new JLabel(Sprache.getEingabe(sprache) + ":");
+        eingabeLabel = new JLabel();
         eingabePanel.add(eingabeLabel);
 
         lebensmittelEingabe = new JTextField(15);
         eingabePanel.add(lebensmittelEingabe);
 
-        haltbarkeitsdatumLabel = new JLabel(Sprache.getHaltbarkeitsdatum(sprache) + ":");
+        haltbarkeitsdatumLabel = new JLabel();
         eingabePanel.add(haltbarkeitsdatumLabel);
 
         haltbarkeitsdatumEingabe = new JTextField(10);
         eingabePanel.add(haltbarkeitsdatumEingabe);
 
         // Auswahl der Kategorie
-        kategorieAuswahl = new JComboBox<>(Kategorie.getAlsStringArray(sprache));
+        kategorieAuswahl = new JComboBox<>();
         eingabePanel.add(kategorieAuswahl);
 
         // Button zum Hinzufügen zur Liste
-        hinzufuegenButton = new JButton(Sprache.getHinzufuegen(sprache));
+        hinzufuegenButton = new JButton();
         hinzufuegenButton.addActionListener(_ -> hinzufuegenEintrag());
         eingabePanel.add(hinzufuegenButton);
 
         // Button zum Entfernen aus der Liste
-        entfernenButton = new JButton(Sprache.getEntfernen(sprache));
+        entfernenButton = new JButton();
         entfernenButton.addActionListener(_ -> entfernenEintrag());
         eingabePanel.add(entfernenButton);
 
         add(eingabePanel, BorderLayout.NORTH);
+
+        // Initialisieren des Sprache-Buttons
+        spracheButton = new JButton();
+        spracheButton.addActionListener(_ -> spracheAendern());
+        eingabePanel.add(spracheButton);
 
         //Anzeigebereich
         lebensmittelListePanel = new JPanel();
@@ -105,17 +109,13 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         }
         add(lebensmittelListePanel);
 
-        // Initialisieren des Sprache-Buttons
-        spracheButton = new JButton(Sprache.getSpracheName(0));
-        spracheButton.addActionListener(_ -> spracheAendern());
-        eingabePanel.add(spracheButton);
-
         // Initialisieren von GSON, für JSON Dateiarbeit
         gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new DateFormatTypeAdapter().nullSafe()).setPrettyPrinting().create();
 
         // Initialisieren der Liste aus der JSON Datei
         loadLebensmittelInhalt();
         aktualisierenLebensmittelListe();
+        setText();
 
         // Anzeigen
         setVisible(true);
@@ -276,6 +276,7 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
 
     //aktualisiere die UI
     private void setText() {
+        setTitle(Sprache.getTitel(sprache));
         eingabeLabel.setText(Sprache.getEingabe(sprache) + ":");
         haltbarkeitsdatumLabel.setText(Sprache.getHaltbarkeitsdatum(sprache) + ":");
         kategorieAuswahl.removeAllItems();
