@@ -6,6 +6,9 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * DataContainer für Array-Liste LebensmittelInhalt
+ */
 public class Lebensmittel {
     Kategorie kategorie;
     String name;
@@ -17,21 +20,16 @@ public class Lebensmittel {
         this.haltbarkeitsdatum = LocalDate.parse(haltbarkeitsdatum, Option.DATE_TIME_FORMATTER);
     }
 
-    /**
-     * vergleicht 'Lebensmittel' Objekt mit anderem Objekt
-     * @param object
-     * @return
-     */
     @Override
     public boolean equals(Object object) {
-        if (this == object) return true; // prüfen ob identisch
-        if (object == null || getClass() != object.getClass()) return false; // prüfen ob Objekt null ist oder eine andere Klasse hat
+        if (this == object) return true; // prüfen, ob identisch
+        if (object == null || getClass() != object.getClass()) return false; // prüfen, ob Objekt null ist oder eine andere Klasse hat
         Lebensmittel lebensmittel = (Lebensmittel) object;
         return Objects.equals(kategorie, lebensmittel.kategorie) && Objects.equals(name, lebensmittel.name) && Objects.equals(haltbarkeitsdatum, lebensmittel.haltbarkeitsdatum);
     }
 
     @Override
-    public int hashCode() { // Hashcode basierend auf Kategorie, Name und Haltbarkeitsdatum
+    public int hashCode() {
         return Objects.hash(kategorie, name, haltbarkeitsdatum);
     }
 

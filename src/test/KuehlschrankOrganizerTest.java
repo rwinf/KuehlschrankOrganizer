@@ -22,21 +22,21 @@ class KuehlschrankOrganizerTest {
     @Test
     void eingabeIstFalsch1() {
         boolean expectedValue = true;
-        boolean actualValue = kuehlschrankOrganizer.eingabeIstFalsch("<Name>", "01.02.2022");
+        boolean actualValue = kuehlschrankOrganizer.eingabeIstFalsch("<Name>");
         Assertions.assertEquals(expectedValue, actualValue);
     }
 
     @Test
     void eingabeIstFalsch2() {
         boolean expectedValue = true;
-        boolean actualValue = kuehlschrankOrganizer.eingabeIstFalsch("", "01.02.2022");
+        boolean actualValue = kuehlschrankOrganizer.eingabeIstFalsch("");
         Assertions.assertEquals(expectedValue, actualValue);
     }
 
     @Test
     void eingabeIstFalsch3() {
         boolean expectedValue = false;
-        boolean actualValue = kuehlschrankOrganizer.eingabeIstFalsch("Richtig", "01.02.2022");
+        boolean actualValue = kuehlschrankOrganizer.eingabeIstFalsch("Richtig");
         Assertions.assertEquals(expectedValue, actualValue);
     }
 }

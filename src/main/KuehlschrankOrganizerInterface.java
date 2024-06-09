@@ -15,7 +15,7 @@ public interface KuehlschrankOrganizerInterface {
     // Geändert: Methode zum Entfernen von Einträgen
     void entfernenEintrag();
 
-    boolean eingabeIstFalsch(String eintrag, String haltbarkeitsdatum);
+    boolean eingabeIstFalsch(String eintrag);
 
     // Geändert: Methode zur Aktualisierung der Anzeige
     void aktualisierenLebensmittelListe();

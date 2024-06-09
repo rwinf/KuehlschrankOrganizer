@@ -23,34 +23,34 @@ import main.helper.json.DateFormatTypeAdapter;
 import main.utility.Option;
 import main.utility.Sprache;
 
-public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganizerInterface { // Definition der Klasse
+public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganizerInterface {
     private final JLabel haltbarkeitsdatumLabel;
     private final JLabel eingabeLabel;
-    private final JButton hinzufuegenButton;
-    private final JButton entfernenButton;
-    private final JTextField lebensmittelEingabe;
-    private final JTextField haltbarkeitsdatumEingabe;
-    private final JPanel lebensmittelListePanel;
+    private final JButton hinzufuegenButton; //zum Hinzufügen eines Lebensmittels
+    private final JButton entfernenButton; //zum Entfernen des ausgewählten Lebensmittels
+    private final JTextField lebensmittelEingabe; //Eingabefenster des Lebensmittels
+    private final JTextField haltbarkeitsdatumEingabe; //Eingabefenster des Haltbarkeitsdatums
+    private final JPanel lebensmittelListePanel; //enthält alle JLists und stellt sie dar
+    //enthält noch einmal alle JLists, die generiert werden, weil es sonst zu Problemen beim casten gekommen wäre
     private final List<JList<String>> lebensmitteljListListe;
-    private final JButton spracheButton;
-    private final JComboBox<String> kategorieAuswahl; // Dropdown-Menü zur Auswahl der Kategorie
+    private final JButton spracheButton; //Wert zum Ändern der Sprache
+    private final JComboBox<String> kategorieAuswahl; //Dropdown-Menü zur Auswahl der Kategorie
     private LebensmittelInhalt lebensmittelInhalt;
     Gson gson;
-    private int sprache = 0;
+    private int sprache;
 
     public KuehlschrankOrganizer() {
-        // Hier beginnt der Part zur Erstellung der grafischen Oberfläche
-        /**
-         * Rahmen und Layout
-         */
+        //setzen der Sprache bei Applikations-Start
+        sprache = Sprache.DEUTSCH;
+
+        //Hier beginnt der Part zur Erstellung der grafischen Oberfläche
+        //Rahmen und Layout
         setTitle(Sprache.getTitel(sprache));
         setSize(1200, 800); // Geändert: Größe angepasst
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        /**
-         * Eingabebereich
-         */
+        //Eingabebereich
         JPanel eingabePanel = new JPanel();
         eingabePanel.setLayout(new FlowLayout());
 
@@ -82,12 +82,12 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
 
         add(eingabePanel, BorderLayout.NORTH);
 
-        /**
-         * Anzeigebereich
-         */
+        //Anzeigebereich
         lebensmittelListePanel = new JPanel();
         lebensmitteljListListe = new ArrayList<>();
         lebensmittelListePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        //Es werden für jede Kategorie eine eigenes JLabel und JList generiert
         for (int i = 0; i < Kategorie.values().length; i++) {
             JPanel jPanel = new JPanel();
             jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
@@ -95,7 +95,6 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
             gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
             gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-            jPanel.setAlignmentY(100);
             jPanel.add(new JLabel(), gridBagConstraints);
             JList<String> lebensmittelListe = new JList<>(new DefaultListModel<>());
             lebensmittelListe.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -128,9 +127,12 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
                 saveLebensmittelInhalt();
             }
         });
-        // Hier endet des Parts zur Erstellung der grafischen Oberfläche
     }
 
+    /**
+     * verhindert, dass man nicht mehr von einer JList deselektieren kann
+     * @param jList1 jList, die aktuell ausgewählt ist
+     */
     @Override
     public void removeSelection(JList<String> jList1) {
         for (JList<String> jList2 : lebensmitteljListListe) {
@@ -139,6 +141,9 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         }
     }
 
+    /**
+     * speichern der ArrayList lebensmittelInhalt in einer JSON-Datei
+     */
     @Override
     public void saveLebensmittelInhalt() { // speichern des aktuellen Inhalts vom Kühlschrank in eine JSON-Datei
         try {
@@ -151,6 +156,9 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         }
     }
 
+    /**
+     * laden der ArrayList lebensmittelInhalt aus einer JSON-Datei
+     */
     @Override
     public void loadLebensmittelInhalt() {  // lädt den Inhalt des Kühlschranks aus einer JSON Datei
         try {
@@ -165,14 +173,17 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
     }
 
     /**
-     * Methode zum Hinzufügen von Einträgen
+     * wenn ein Eintrag durch User-Eingabe hinzugefügt wird
      */
     @Override
     public void hinzufuegenEintrag() {
+        //auswerten der Eingabe-Daten
         String eintrag = lebensmittelEingabe.getText().trim(); // Holt den Text aus einem Eingabefeld lebensmittelEingabe, entfernt führende und folgende Leerzeichen und speichert diesen in der Variablen lebensmittel.
         String haltbarkeitsdatum = haltbarkeitsdatumEingabe.getText().trim(); // Holt den Text aus dem Eingabefeld haltbarkeitsdatumEingabe, entfernt führende und folgende Leerzeichen und speichert diesen in der Variablen haltbarkeitsdatum.
         String kategorieAuswahlSelectedItem = (String) kategorieAuswahl.getSelectedItem();
-        if (eingabeIstFalsch(eintrag, haltbarkeitsdatum)) return;
+        if (eingabeIstFalsch(eintrag)) return;
+
+        //hinzufügen eines neuen Lebensmittels aus den Eingabedaten zu lebensmittelInhalt
         try {
             lebensmittelInhalt.add(Kategorie.get(kategorieAuswahlSelectedItem), eintrag, haltbarkeitsdatum);
 
@@ -180,21 +191,26 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
             JOptionPane.showMessageDialog(this, Sprache.getUngueltiges(sprache) + " " + Sprache.getHaltbarkeitsdatum(sprache) + "!");
             return;
         }
+
+        //aktualisierung der UI
         aktualisierenLebensmittelListe();
         lebensmittelEingabe.setText("");
         haltbarkeitsdatumEingabe.setText("");
     }
 
     /**
-     * Methode zum Entfernen von Einträgen
+     * wenn ein Eintrag durch User-Eingabe entfernt wird
      */
     @Override
     public void entfernenEintrag() {
+        //herausfinden, in welcher JList das Lebensmittel selektiert wurde
         for (JList<String> stringJList : lebensmitteljListListe) {
             if (stringJList.isSelectionEmpty()) continue;
+
+            //herausfinden, welches Lebensmittel in der selektierten JList entfernt werden soll
             for (Lebensmittel lebensmittel : lebensmittelInhalt) {
                 if (lebensmittel.toString().equals(stringJList.getSelectedValue())) {
-                    lebensmittelInhalt.remove(lebensmittel);
+                    lebensmittelInhalt.remove(lebensmittel); //Lebensmittel entfernen
                     break;
                 }
             }
@@ -202,8 +218,12 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         aktualisierenLebensmittelListe();
     }
 
+    /**
+     * @param eintrag zu überprüfender String
+     * @return ob Feld Eintrag den vorgegebenen Anforderungen entspricht
+     */
     @Override
-    public boolean eingabeIstFalsch(String eintrag, String haltbarkeitsdatum) {
+    public boolean eingabeIstFalsch(String eintrag) {
         if (eintrag.isEmpty() || eintrag.contains("<") || eintrag.contains(">") || eintrag.contains("\"")) {
             JOptionPane.showMessageDialog(this, "Ungültige Eingabe!");
             return true;
@@ -212,38 +232,49 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
     }
 
     /**
-     * Methode zur Aktualisierung der Anzeige
+     * entfernt alle Elemente aus lebensMittelListe und fügt die aktualisierten Daten wieder hinzu
      */
     @Override
     public void aktualisierenLebensmittelListe() {
         int index = 0;
+        //iteriere durch die Komponenten von lebensmittelListePanel
         for (Component component1 : lebensmittelListePanel.getComponents()) {
             if (!(component1 instanceof JPanel jPanel)) continue;
+
+            //iteriere durch die (2) Komponenten des JPanel
             for (Component component2 : jPanel.getComponents()) {
                 if (!(component2 instanceof JLabel jLabel)) continue;
+
+                //wenn es keine Lebensmittel einer Kategorie gibt, lasse das Label leer
                 if (lebensmittelInhalt.getNachKategorie(Kategorie.get(index++)).isEmpty()) {
                     jLabel.setText("");
                     continue;
                 }
+                //setze das Label zum respektiven String aus sprache
                 jLabel.setText((Kategorie.get(index - 1)).toString(sprache));
             }
 
         }
         index = 0;
+        //iteriere durch die JLists aus lebensmitteljListListe
         for (JList<String> stringJList : lebensmitteljListListe) {
             if (!(stringJList.getModel() instanceof DefaultListModel<String> defaultListModel)) continue;
-            defaultListModel.clear();
+            defaultListModel.clear(); //lösche alle Elemente der Liste
+
+            //füge alle Elemente zur JList hinzu
             for (Lebensmittel lebensmittel : lebensmittelInhalt.getNachKategorie(Kategorie.get(index++))) {
                 defaultListModel.addElement(lebensmittel.toString());
             }
         }
     }
 
+    //ändere die Sprache zur nächsten Sprache
     private void spracheAendern() {
         sprache = Sprache.next(sprache);
         setText();
     }
 
+    //aktualisiere die UI
     private void setText() {
         eingabeLabel.setText(Sprache.getEingabe(sprache) + ":");
         haltbarkeitsdatumLabel.setText(Sprache.getHaltbarkeitsdatum(sprache) + ":");

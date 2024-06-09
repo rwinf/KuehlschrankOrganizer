@@ -1,7 +1,12 @@
 package main.utility;
 
+/**
+ * Sprach-Modul wo alle Strings in unterschiedlichen Sprachen gespeichert werden
+ */
 public class Sprache {
-    private static final int MAX = 2;
+    public static final int DEUTSCH = 0;
+    public static final int ENGLISCH = 1;
+    private static final int MAX = 2; //Anzahl an Sprachen
     private static final String[] titel = {"Kühlschrank Organizer", "Fridge Organizer"};
     private static final String[] spracheName = {"Deutsch", "English"};
     private static final String[] eingabe = {"Eingabe", "Input"};

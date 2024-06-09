@@ -8,10 +8,10 @@ public class LebensmittelInhalt extends ArrayList<Lebensmittel> {
     }
 
     /**
-     * Methode fügt neues 'Lebensmittel' zur Liste hinzu
-     * @param kategorie
-     * @param name
-     * @param haltbarkeitsdatum
+     * Methode fügt neues 'Lebensmittel' zur Liste hinzu und sortiert sie
+     * @param kategorie Kategorie
+     * @param name Name
+     * @param haltbarkeitsdatum Haltbarkeitsdatum
      */
     public void add(Kategorie kategorie, String name, String haltbarkeitsdatum) {
         super.add(new Lebensmittel(kategorie, name, haltbarkeitsdatum));
@@ -20,8 +20,8 @@ public class LebensmittelInhalt extends ArrayList<Lebensmittel> {
 
     /**
      * filtert nach gegebener Kategorie und gibt neue Liste zurück (enthält nur gewünschte Kategorie)
-     * @param kategorie
-     * @return
+     * @param kategorie nach welcher Kategorie gefiltert wird
+     * @return LebensmittelInhalt (ArrayList) mit Lebensmitteln der gewünschten Kategorie
      */
     public LebensmittelInhalt getNachKategorie(Kategorie kategorie) {
         LebensmittelInhalt lebensmittelInhalt = new LebensmittelInhalt();
@@ -33,7 +33,7 @@ public class LebensmittelInhalt extends ArrayList<Lebensmittel> {
     }
 
     /**
-     * Sortieren nach Haltbarkeitsdatum
+     * Comparator zum Sortieren nach Haltbarkeitsdatum
      */
     private static class LebensmittelInhaltComparator implements Comparator<Lebensmittel> {
         @Override
