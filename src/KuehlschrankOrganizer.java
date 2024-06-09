@@ -158,7 +158,9 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         }
     }
 
-    // Geändert: Methode zum Hinzufügen von Einträgen
+    /**
+     * Methode zum Hinzufügen von Einträgen
+     */
     @Override
     public void hinzufuegenEintrag() {
         String eintrag = lebensmittelEingabe.getText().trim(); // Holt den Text aus einem Eingabefeld lebensmittelEingabe, entfernt führende und folgende Leerzeichen und speichert diesen in der Variablen lebensmittel.
@@ -178,7 +180,9 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         haltbarkeitsdatumEingabe.setText(""); // Hinzugefügt: Textfeld für Haltbarkeitsdatum leeren
     }
 
-    // Geändert: Methode zum Entfernen von Einträgen
+    /**
+     * Methode zum Entfernen von Einträgen
+     */
     @Override
     public void entfernenEintrag() {
         for (JList<String> stringJList : lebensmitteljListListe) {
