@@ -19,14 +19,12 @@ public enum Kategorie {
     }
 
     public static Kategorie get(String name) {
-        int i = 0;
         for(Kategorie kategorie : values()) {
             for(String kategorieString : kategorie.name) {
-                if (kategorieString.equals(name)) return values()[i];
+                if (kategorieString.equals(name)) return kategorie;
             }
-            i++;
         }
-        return Kategorie.values()[i];
+        return Kategorie.KEINE;
     }
 
     public static Kategorie get(int index) {
