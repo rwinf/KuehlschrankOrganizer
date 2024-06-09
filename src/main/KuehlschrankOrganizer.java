@@ -65,7 +65,7 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         eingabePanel.add(haltbarkeitsdatumEingabe);
 
         // Hinzugefügt: ComboBox zur Auswahl der Kategorie
-        kategorieAuswahl = new JComboBox<>(Kategorie.getAsStringArray(sprache));
+        kategorieAuswahl = new JComboBox<>(Kategorie.getAlsStringArray(sprache));
         eingabePanel.add(kategorieAuswahl);
 
         // Button zum Hinzufügen zur Liste
@@ -242,7 +242,7 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         eingabeLabel.setText(Sprache.getEingabe(sprache) + ":");
         haltbarkeitsdatumLabel.setText(Sprache.getHaltbarkeitsdatum(sprache) + ":");
         kategorieAuswahl.removeAllItems();
-        kategorieAuswahl.setModel(new DefaultComboBoxModel<>(Kategorie.getAsStringArray(sprache)));
+        kategorieAuswahl.setModel(new DefaultComboBoxModel<>(Kategorie.getAlsStringArray(sprache)));
         hinzufuegenButton.setText(Sprache.getHinzufuegen(sprache));
         entfernenButton.setText(Sprache.getEntfernen(sprache));
         spracheButton.setText(Sprache.getSpracheName(sprache));

@@ -4,8 +4,6 @@ import main.helper.Kategorie;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 class KategorieTest {
 
     @Test
@@ -31,7 +29,7 @@ class KategorieTest {
 
     @Test
     void getAsStringArray() {
-        String[] actualValue = Kategorie.getAsStringArray(0);
+        String[] actualValue = Kategorie.getAlsStringArray(0);
         String[] expectedValue = new String[]{"Keine", "Obst", "Gemüse", "Fleisch", "Snacks", "Getränke"};
         Assertions.assertArrayEquals(actualValue, expectedValue);
     }

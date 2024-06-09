@@ -32,7 +32,7 @@ public enum Kategorie {
         return KEINE;
     }
 
-    public static String[] getAsStringArray(int sprache) {
+    public static String[] getAlsStringArray(int sprache) {
         ArrayList<String> stringArrayList = new ArrayList<>();
         for (Kategorie kategorie : Kategorie.values()) {
             stringArrayList.add(kategorie.name[sprache]);
