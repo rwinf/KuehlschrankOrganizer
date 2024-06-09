@@ -1,10 +1,10 @@
-package helper.json;
+package main.helper.json;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import utility.Option;
+import main.utility.Option;
 
 import java.io.IOException;
 import java.time.LocalDate;

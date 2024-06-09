@@ -1,3 +1,5 @@
+package main;
+
 import javax.swing.*;
 
 public interface KuehlschrankOrganizerInterface {
@@ -13,7 +15,7 @@ public interface KuehlschrankOrganizerInterface {
     // Geändert: Methode zum Entfernen von Einträgen
     void entfernenEintrag();
 
-    boolean eingabePruefen(String eintrag, String haltbarkeitsdatum);
+    boolean eingabeIstFalsch(String eintrag, String haltbarkeitsdatum);
 
     // Geändert: Methode zur Aktualisierung der Anzeige
     void aktualisierenLebensmittelListe();

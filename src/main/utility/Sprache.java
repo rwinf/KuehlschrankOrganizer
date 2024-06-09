@@ -1,4 +1,4 @@
-package utility;
+package main.utility;
 
 public class Sprache {
     private static final int MAX = 2;
