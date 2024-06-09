@@ -29,42 +29,44 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
     private final JButton hinzufuegenButton;
     private final JButton entfernenButton;
     private final JTextField lebensmittelEingabe;
-    private final JTextField haltbarkeitsdatumEingabe; // Hinzugefügt: Eingabefeld für Haltbarkeitsdatum
+    private final JTextField haltbarkeitsdatumEingabe;
     private final JPanel lebensmittelListePanel;
     private final List<JList<String>> lebensmitteljListListe;
     private final JButton spracheButton;
-    // Hinzugefügt: ComboBox zur Auswahl der Kategorie
     private final JComboBox<String> kategorieAuswahl; // Dropdown-Menü zur Auswahl der Kategorie
-    // Hinzugefügt: Zwei separate Listen für Lebensmittel und Getränke
     private LebensmittelInhalt lebensmittelInhalt;
     Gson gson;
     private int sprache = 0;
 
     public KuehlschrankOrganizer() {
         // Hier beginnt der Part zur Erstellung der grafischen Oberfläche
-        // Rahmen und Layout
+        /**
+         * Rahmen und Layout
+         */
         setTitle(Sprache.getTitel(sprache));
         setSize(1200, 800); // Geändert: Größe angepasst
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Eingabebereich
+        /**
+         * Eingabebereich
+         */
         JPanel eingabePanel = new JPanel();
         eingabePanel.setLayout(new FlowLayout());
 
         eingabeLabel = new JLabel(Sprache.getEingabe(sprache) + ":");
         eingabePanel.add(eingabeLabel);
 
-        lebensmittelEingabe = new JTextField(15); // Geändert: Größe angepasst
+        lebensmittelEingabe = new JTextField(15);
         eingabePanel.add(lebensmittelEingabe);
 
-        haltbarkeitsdatumLabel = new JLabel(Sprache.getHaltbarkeitsdatum(sprache) + ":"); // Hinzugefügt: Label für Haltbarkeitsdatum
+        haltbarkeitsdatumLabel = new JLabel(Sprache.getHaltbarkeitsdatum(sprache) + ":");
         eingabePanel.add(haltbarkeitsdatumLabel);
 
-        haltbarkeitsdatumEingabe = new JTextField(10); // Hinzugefügt: Eingabefeld für Haltbarkeitsdatum
+        haltbarkeitsdatumEingabe = new JTextField(10);
         eingabePanel.add(haltbarkeitsdatumEingabe);
 
-        // Hinzugefügt: ComboBox zur Auswahl der Kategorie
+        // Auswahl der Kategorie
         kategorieAuswahl = new JComboBox<>(Kategorie.getAlsStringArray(sprache));
         eingabePanel.add(kategorieAuswahl);
 
@@ -80,7 +82,9 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
 
         add(eingabePanel, BorderLayout.NORTH);
 
-        // Anzeigebereich
+        /**
+         * Anzeigebereich
+         */
         lebensmittelListePanel = new JPanel();
         lebensmitteljListListe = new ArrayList<>();
         lebensmittelListePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -102,15 +106,15 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         }
         add(lebensmittelListePanel);
 
-        //Initialisierung des Sprache-Buttons
+        // Initialisieren des Sprache-Buttons
         spracheButton = new JButton(Sprache.getSpracheName(0));
         spracheButton.addActionListener(_ -> spracheAendern());
         eingabePanel.add(spracheButton);
 
-        //Initialisierung von GSON, für JSON Dateiarbeit
+        // Initialisieren von GSON, für JSON Dateiarbeit
         gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new DateFormatTypeAdapter().nullSafe()).setPrettyPrinting().create();
 
-        // Initialisierung der Liste aus der JSON Datei
+        // Initialisieren der Liste aus der JSON Datei
         loadLebensmittelInhalt();
         aktualisierenLebensmittelListe();
 
@@ -124,7 +128,7 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
                 saveLebensmittelInhalt();
             }
         });
-        // Hier endet der Part zur Erstellung der grafischen Oberfläche
+        // Hier endet des Parts zur Erstellung der grafischen Oberfläche
     }
 
     @Override
@@ -178,7 +182,7 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         }
         aktualisierenLebensmittelListe();
         lebensmittelEingabe.setText("");
-        haltbarkeitsdatumEingabe.setText(""); // Hinzugefügt: Textfeld für Haltbarkeitsdatum leeren
+        haltbarkeitsdatumEingabe.setText("");
     }
 
     /**
@@ -207,7 +211,9 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
         return false;
     }
 
-    // Geändert: Methode zur Aktualisierung der Anzeige
+    /**
+     * Methode zur Aktualisierung der Anzeige
+     */
     @Override
     public void aktualisierenLebensmittelListe() {
         int index = 0;
