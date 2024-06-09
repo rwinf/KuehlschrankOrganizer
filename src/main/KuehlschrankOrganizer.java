@@ -33,7 +33,7 @@ public class KuehlschrankOrganizer extends JFrame implements KuehlschrankOrganiz
     private final JPanel lebensmittelListePanel;
     private final List<JList<String>> lebensmitteljListListe;
     private final JButton spracheButton;
-    private final JComboBox<String> kategorieAuswahl; // Dropdown-Menü zur Auswahl der Kategorie
+    private final JComboBox<String> kategorieAuswahl; // Dropdown Menü zur Auswahl der Kategorie
     private LebensmittelInhalt lebensmittelInhalt;
     Gson gson;
     private int sprache = 0;
